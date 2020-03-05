@@ -1,0 +1,19 @@
+\chapter{Code}	% *NOT* \OnePageChapter
+
+All the code and deployment instructions are available online on opensource repositories in GitHub. The code is separated into 2 repositories. One for all infrastructure and backend and one for the user interface. All code is under version control on git. 
+
+\section{Infrastructure and service code}
+
+\textit{https://github.com/Project-EPIC/epic-infra}
+
+Each service is organized into their corresponding folder. Inside a folder there's the code, the service documentation and instructions to upload the docker image to docker hub.
+
+This repository also includes the Dataproc workflow definition. There you can add new analysis tasks to execute once an event has stopped collection. The Dataproc workflow needs to be overwritten and commited to maintain the file in the repository updated with the one deployed. There's also a separate folder for each Spark job. Each contains a \textit{pom.xml} file that describes how to compile and package the job code into an executable jar file.
+
+Then there's the \textit{kubernetes} folder. In this folder, there's all the YAML definitions needed to deploy the system into a Google Cloud Kubernetes cluster. 
+
+\section{User interface code}
+
+\textit{https://github.com/Project-EPIC/reactdashboard}
+
+All react code is contained inside the repository. It's structured following the sidebar navigation. Each navigation link on the sidebar has a folder in components. The repository follows a traditional structure for a React application.

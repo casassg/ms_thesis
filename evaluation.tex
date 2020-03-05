@@ -1,0 +1,82 @@
+\chapter{Evaluation}
+
+To evaluate my work, I will compare my new crisis informatics infrastructure with the previous infrastructure consisting of EPIC Collect and EPIC Analyze. My goal will be to evaluate my ability to replicate most of the previous infrastructure's features using cloud-based technologies. I will also evaluate whether my prototype is more extensible, scalable, and reliable.
+
+\section{Data Collection and Persistence}
+
+The main difference in data collection is the separation of concerns in separate services within the new infrastructure. The collection and filtering steps are separated into two different services. To update the keywords being collected, the new infrastructure uses a similar approach to the previous one. This time though, the collection service checks a local file which is updated by Kubernetes. The file is updated every time that the collection needs to be restarted by the Events API.
+
+On the persistence front, I switched from Cassandra to files in an object storage system. This is better for the long term as there's no need for a database to be running to analyze the data. The primary reason for this change is the existence of unstructured scalable object analysis services provided by cloud services. The new system can still do data analysis yet make use of a simple persistence mechanism like file storage greatly simplifying the entire system and making it much more accessible to new Project EPIC developers in the future.
+
+\subsection{Extensibility}
+
+Thanks to the separation of stages in the collection pipeline, I can work on expanding the infrastructure's filter capabilities separately from the service that connects to the Twitter streaming API. In addition, thanks to the fact that I use Kafka to pass messages around, I can add additional real-time processing services that feed on the incoming stream of tweets. This can be done independently of the collection pipeline which makes it easier than the previous infrastructure to extend. 
+
+Thanks to using a simple format for data storage, I can also add new analysis techniques on top of the collection service without having to worry about overwhelming a database. This also makes the process of data analysis simpler as it no longer requires having to manually copy data from our collection cluster to the analysis cluster. The data is always in the same place. In the future, new analysis software can be used to process all of the data. Since the system is storing the data in raw JSON format, it will be straightforward to connect new software with the existing data.
+
+\subsection{Reliability}
+
+Adding an external message passing software (Kafka) to use as a buffer increases reliability. If by any chance the filter service were to fail, Kafka will have a copy of all of the messages in its queue, so the filter service just needs to poll the buffer from Kafka and process those messages again. This ensures that the infrastructure does not lose messages due to filtering errors. 
+
+With respect to data storage, Google Cloud Storage's contract ensures our data will be durable and available 99.9\% of the time. Thanks to this service guarantee, I avoid having to set manually any process for data redundancy or replication. With the previous infrastructure, even if there was data duplication, the data durability depended on the maintenance of our campus cluster and since Project EPIC had to have people to maintain our cluster, the project was in danger of losing the students who knew how to perform that maintainence. As students graduated, this risk became true and the cluster moved to a state where it was not being properly maintained. Due to the low maintenance caused by these changes, it became uncertain if all of Project EPIC's data would remain safely accessible. To mitigate this risk, I downloaded all of that data in early 2019 and stored it in Google Cloud Storage as a fail-safe. Thanks to this, all data sets for Project EPIC are stored in a similar pattern and are all stored in Google Cloud Storage and now data storage reliability is no longer a concern. 
+
+\subsection{Scalability}
+
+On the data collection aspect, the infrastructure can now scale horizontally different pieces of the pipeline individually. Kubernetes uses its horizontal scaling service for automatically scaling filters when  services have maxed their use of CPU resources. To manage workload partitioning between each instance of a filter service, the system relies on Kafka topic partitions, which uses internally a round-robin mechanism to assign each message to a partition. This enables a fast partition of data between nodes when scaling. In this fashion, the throughput of the ingestion pipeline can be increased as needed automatically. 
+
+Compared to the previous infrastructure, the only way to scale the ingestion pipeline was by adding more CPUs to the server that was executing it. This type of scalability, known as vertical scalability, even if effective, can prove more expensive than horizontal scaling. CPU intensive machines tend to be more specialized machines that require a more specific setup, and therefore, tend to be more expensive to buy and maintain. In addition, such changes are expensive and so scaling in this fashion never occurred with the previous infrastructure.
+
+Finally, to store the data, the system no longer has a potential bottleneck with the database as all of it's data are stored as files. This allows for a significant increase in the ability to store messages in parallel as multiple writes can occur to different files in the cloud storage system.
+
+\section{Data Analysis}
+
+With respect to data analysis, the main difference is the usage of BigQuery instead of the combination of Solr, Pig, abd Hive. BigQuery accepts SQL queries for the data sets without the need for using a traditional database. In addition, maintenance costs can be reduced thanks to not having to maintain the cluster that was running Solr, Pig, and Hive.
+
+Google BigQuery can run more powerful filter queries than the ones we had in Cassandra. It can also replicate most of the capabilities available when using Solr in the old infrastructure, as my prototype can express EPIC Analyze queries as SQL in the new infrastructure. 
+
+For the pagination and exploration of data sets, I was able to replicate similar results with the ones in EPIC Analyze by using filenames as the index to support pagination. Thanks to the index, I can also do quick time slicing of the data set similar to what is available in EPIC Analyze.
+
+Finally, using Google Cloud Dataproc I have been able to replicate and indeed significantly outperform the capabilities of the simple job framework that was built for EPIC Analyze.
+
+\subsection{Extensibility}
+
+As mentioned before, thanks to having the collected data stored in a raw format, new analysis techniques can be added to the system with relative ease. In addition, I do not need to worry about causing a bottleneck on the database that could affect the collection pipeline. 
+
+Thanks to Google Cloud Dataproc workflows, any developer can add new analysis jobs that provide new insights after collecting an event. New Spark jobs that export insights to Google Cloud Storage can be added. Paired with a new service, any developer can expose the results outside and further improve the user interface. This process has been proved that it can be done separately, an example of such is the mentions API discussed previously.
+
+\subsection{Reliability}
+
+BigQuery is reliable based on the service contract that Google Cloud provides. Thanks to making this service external, I reduced once again our maintenance costs, as I do not need to maintain a cluster for Hive or Pig as we did in the old infrastructure. This increases  system reliability as I am outsourcing this part to a third party. 
+
+In that same way, having a single source for the data helps to avoid problems of loading data between the collection system and the analysis system as was done in the old infrastructure. This increases reliability in the long term as it is reducing the number of steps that need to be performed before an analyst can analyze a data set. 
+
+\subsection{Scalability}
+
+Thanks to BigQuery being a server-less component from Google Cloud, it works by scaling up for our query to match the size of the data. This is done internally by Google. For example, I can get the top 50 users who tweeted in a data set with 32 million tweets in under 2 minutes. However, compared to Solr, I can not perform filter queries as fast, the system is giving up performance from an index to gain performance on overall interactive queries. I could have used internal tables from BigQuery for increased performance, but given the number of queries launched to the data set over the life of a data set, it did not seem cost effective to do this yet.
+
+Google Cloud Dataproc can also be configured to add more Spark nodes on demand. This allows adapting the post-processing batch workflow to be faster if needed. For the moment I left it at two nodes only, most data sets can be analyzed quickly under this configuration. 
+
+Finally, thanks to the usage of a Load Balancer on top of the external services, I could scale up the external services using Kubernetes. This would allow to serve more data and adapt to peak usage of the user interface. This has not been implemented, as the current configuration should be more than enough for the average usage from Project EPIC.
+
+\section{User interface}
+
+The user interface is  the component that has accumulated the most changes in the new infrastructure. I added a new abstraction layer which is the service layer. This new layer separates the user interface from the data representation of the internal storage layers.
+
+In addition, I switched to a more modern approach for designing web applications using a single page application framework. This helps to avoid bad practices of past web applications, separating views and controllers completely. The user interface is delegated to the browser, leaving the service layer in charge of abstracting the storage as a REST API. 
+
+\subsection{Extensibility}
+
+Thanks to React and how the dashboard app is structured, the user interface is easy to extend. New services can be integrated into the existing app by creating a new component to work as the user interface. Each component is in charge of managing its own API access, avoiding coupling between components.
+
+To avoid retrieving data over and over, Redux is used to share state between components. Which means that new components using data which is already specified, can work without having to worry about how to retrieve the data from an API. 
+
+Finally, the design is separated in separate css files from the main javascript file for each component. This separation allows for people to be more focused on designing interaction and visualization to work separately from the main logic. This can help in the future to create new data visualizations.
+
+Compared to the previous user interfaces, the new user interface allows gathering under one roof all of the various steps needed to perform data collection and analysis. Previously an analyst had to use separate applications to collect data and analyze it. Now everything can be done under a single app. This helps to extend the capabilities from the user interface and to normalize the data across the analysis and collection sides of the system.
+
+\subsection{Reliability}
+The user interface is deployed separately from the services, which makes it more reliable. It is deployed to the Firebase CDN from Google. This allows the user interface to work, even if the internal services are having issues. This separation allows increasing reliability for the front-end, as before it was tied to the issues that may happen in Ruby on Rails applications.
+
+\subsection{Scalability}
+
+Views are served statically from a content delivery network as mentioned above. This means that the user interface is served with low latency across the planet and loaded fast into the browser. Compared to the previous infrastructure, this is a huge leap forward. Previously, the system was tied to the same server that was accessing the data internally. 

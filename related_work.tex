@@ -1,0 +1,25 @@
+\chapter{Related Work}
+
+There has been significant research into big data analysis and crisis informatics. I now present some related work to my thesis in the fields of crisis informatics and designing large data set analysis systems.  As mentioned above this work is an extension on top of the work that Project EPIC researchers have invested since 2009 in EPIC Collect and EPIC Analyze. 
+
+\section{Data Collection and Storage for Crisis Informatics}
+
+At Project EPIC there has been several papers describing how to collect tweets at scale. These have been related to a system known as EPIC Collect and are described in the earliest chapters of this thesis. In \cite{anderson2011design}, an early infrastructure based on MySQL to store data is proposed. This infrastructure is built using Spring to be scalable verically. Later in \cite{schram2012mysql} there is a switch from MySQL to NoSQL (Cassandra). This is due to the discovery of a bottleneck in the storage layer. However, the only way to scale this system remains vertically scalability as EPIC Collect needs a powerful machine to run its threads. A similar approach was exposed in \cite{kumar2011tweettracker}, without getting in depth on how the system was actually implemented.
+
+The microservice approach in Project EPIC was proposed in my undergraduate thesis \cite{casas2017big}. The collection pipeline is pretty similar, changing to object storage instead of Cassandra. A similar approach is adopted by \cite{khaleq2018cloud}, the main difference being that their approach only allowed for a single event to be collected at a time. 
+
+On the filtering side, most work has been done to collect using keywords. \cite{kejriwal2019pipeline} and \cite{khaleq2018cloud} propose different ways to automatically classify tweets as relevant for the event using machine learning. Other systems proposed suggest the usage of user timelines for a more contextual data set \cite{anderson2019incorporating}. For this most recent paper, I participated by developing microservices for the collection pipeline as well.
+
+Other work has been using collection after an event using services like GNIP \cite{ashktorab2014tweedr}. It is important to note that due to recent changes in the Twitter API usage policy, these have become more expensive to use or simply unavailable. For this reason, live collection is important to keep costs down, even if analysis are only done after the event.
+
+\section{Data Analysis for Crisis Informatics}
+
+Project EPIC has done a lot of research on supporting analysts on their work to analyze large data sets. MongoDB was proposed in \cite{anderson2013architectural}, even though it was acknowledged that it had its limitations and the queries were slow to resolve. EPIC Analyze \cite{anderson2015design,barrenechea2015getting} addressed some of these issues by switching to an integration between Cassandra and Solr. 
+
+In \cite{oussalah2013software} an approach for geospatial analysis is proposed. This work still limits the exploration capabilities of the analyst over the data set. Compared to the proposed system in this thesis, the new infrastructure expands to allow querying as a more generic usage while avoiding falling into complex systems difficult to maintain like the one proposed in \cite{oussalah2013software}. This approach was heavily influenced by the design of EPIC Analyze \cite{barrenechea2015getting}.
+
+Other approaches have been to provide Spark on top of Cassandra stored tweets \cite{casas2017big}. However, this limits the fields to those defined on ingestion and makes the system fail if the schema ever changes. In addition, it has been found that Cassandra can act as a bottleneck when trying to use it for ingestion and analysis at the same time.
+
+Finally, in \cite{madhavilatha2016streaming} it is suggested to use interactive programmatic approaches to streaming collections and their analysis. This work inspired me to open the usage of BigQuery for analysts to use, as sometime programmatic and flexible interfaces are required for more specialized analysts to be more productive. In this case, I do not try to reinvent the wheel and just allow the analyst to see the data and work with it using Google Cloud and BigQuery. 
+
+

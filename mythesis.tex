@@ -1,0 +1,89 @@
+\documentclass[defaultstyle,11pt]{thesis}
+
+\usepackage{amssymb}		% to get all AMS symbols
+\usepackage{graphicx}		% to insert figures
+\usepackage{hyperref}		% PDF hyperreferences??
+
+%%%%%%%%%%%%   All the preamble material:   %%%%%%%%%%%%
+
+\title{Social Media Analysis for Crisis Informatics in the Cloud}
+
+\author{Mr.}{Gerard Casas Saez}
+
+\otherdegrees{B.A., Universitat Politecnica de Catalunya, 2017}
+
+\degree{Master of Science}		%  #1 {long descr.}
+	{M.S., Computer Science}		%  #2 {short descr.}
+
+\dept{Department of}			%  #1 {designation}
+	{Computer Science}		%  #2 {name}
+
+\advisor{Prof.}				%  #1 {title}
+	{Kenneth M. Anderson}			%  #2 {name}
+	
+\degreeyear{2019}
+
+\reader{Prof.~Steve Voida}		%  2nd person to sign thesis
+% \readerThree{Prof.~Richard Han}		%  3rd person to sign thesis
+
+\abstract{  \OnePageChapter	% because it is very short
+
+Social media analysis of disaster events is a critical task in crisis informatics research. It involves analyzing social media data generated during natural disasters, crisis events, or other mass convergence events. Due to the large data sets generated during these events, large scale software infrastructures need to be designed to analyze the data in a timely manner. Creating such infrastructures bring the need to maintain them and this becomes more difficult as these infrastructures grow larger and older. Maintenance costs are high since there is a need for queries to be handled quickly which require large amounts of computational resources to be available on demand 24 hours a day, seven days a week. In this thesis, I describe an alternative approach to designing a software infrastructure for analyzing unstructured data on the cloud while providing fast queries and with the reliability needed for crisis informatics research. Additionally, I discuss a new approach for a more reliable Twitter stream collection using container orchestrated systems. I finally compare this new infrastructure with existing crisis informatics software infrastructures and compare their reliability, scalability and extensibility with my approach and my prototype.}
+
+\dedication[Dedication]{	% NEVER use \OnePageChapter here.
+	To my family, my parents, my brother, my uncles, my grandfather who supported and encouraged me at all times on this adventure for the past three years.
+	}
+
+\acknowledgements{	\OnePageChapter	% *MUST* BE ONLY ONE PAGE!
+	I would first like to thank my thesis advisor, Prof. Ken Anderson. Thank for his continuous support over the last three years. He gave me this amazing opportunity and welcomed me to join his group. I would like to give a special mention to the people that have helped me this last semester on the development of the vision I had for a new Project EPIC infrastructure: Sharan Srivatsa, Prashil Bhimani, Sahar Jambi and Ismael Garrido. Without their work, none of this would have been possible. I would like to also thank Afnan Meshal for pushing me to work harder and to think in new ways to design this infrastructure. To Rasha Mirza and Mazin Hakeem, I would like to thank them for their continued encouragement and support these past three years. Another special mention goes to Reem Albaghli for reminding me to take a break from time to time. I would also like to appreciate Jennings Anderson for giving wings to our crazy moonshots. I would like to thank the directors of Project EPIC, Profs. Leysia Palen and Ken Anderson for providing me with this amazing opportunity to conduct my research in their group. 
+	
+	I would like to thank my family for their support and encouragement on moving to the United States to work on the things I love doing, especially my mom for almost forcing me to not miss this opportunity. I would like to thank all my friends here in Boulder who have changed my life and given me wings to discover. Special thanks to my roommate Albert and the rest of my cohort of Balsells fellows: Roger Huerta, Noemi Collado, Jordi Ballesteros and Oscar Mu\~noz.
+	
+	Finally, I would like thank Pete Balsells, and all the team that makes the Balsells fellowship a reality, for providing me the opportunity to pursue my master's degree here in Boulder.
+
+	}
+
+% \IRBprotocol{E927F29.001X}	% optional!
+
+\ToCisShort	% use this only for 1-page Table of Contents
+
+\LoFisShort	% use this only for 1-page Table of Figures
+% \emptyLoF	% use this if there is no List of Figures
+
+\LoTisShort	% use this only for 1-page Table of Tables
+% \emptyLoT	% use this if there is no List of Tables
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%       BEGIN DOCUMENT...         %%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\input macros.tex
+% \input chapter1.tex
+% \input chapter2.tex
+\input introduction.tex
+\input background.tex
+\input problem_statement.tex
+\input system_requirements.tex
+\input approach.tex
+\input evaluation.tex
+\input results.tex
+\input related_work.tex
+\input future_work.tex
+\input discussion.tex
+\input conclusion.tex
+
+%%%%%%%%%   then the Bibliography, if any   %%%%%%%%%
+\bibliographystyle{plain}	% or "siam", or "alpha", etc.
+\nocite{*}		% list all refs in database, cited or not
+\bibliography{refs}		% Bib database in "refs.bib"
+
+%%%%%%%%%   then the Appendices, if any   %%%%%%%%%
+\appendix
+\input appendixA.tex
+% \input appendixB.tex
+
+
+\end{document}
+

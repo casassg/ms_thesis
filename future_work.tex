@@ -1,0 +1,22 @@
+\chapter{Future work}
+
+The main goal behind the infrastructure redesign has been extensibility. Therefore there are a lot of options to improve on extensibility in the future. At the beginning of the project, a set of features to develop was decided with other members from the software engineering group at Project EPIC. Some of the features were not implemented for my thesis. Others have just appeared after working on the project for a while.
+
+An aspect that should be explored further is adding new methods for events. In this infrastructure, the only operations allowed for an event in the Events API are create, read and update. To be specific, the only update allowed is to start or stop the collection. Delete is not allowed since it would destroy data that could prove valuable. The design also does not allow to update the keywords since that may be confusing. If a keyword is removed from an event, does this mean that all the collected data must be removed if they were collected only for that keyword? I acknowledge that further research is needed as what should be done for each of the possible update scenarios.
+
+More work could be done to extend the capabilities of filtering from the collection pipeline. Right now, an analyst can only specify whether a keyword should be in a tweet to collect. However, work can be done to add more rules for filtering. An option could be to avoid saving retweets. Another one could be to avoid saving tweets that mention a certain user. This can be extended through the filtering service as well as the Event API.
+
+The Filter API can also be extended by adding new fields to query from. Using BigQuery, the system could be brought to a similar standing than the one available with Solr on the old infrastructure. Some of the proposed filters in previous Project EPIC are to filter by tweet author or to filter by whether it is a retweet or not. 
+
+Another aspect to explore would be to explore filtered data sets for further work. An option to do so would be using BigQuery data sets. This feature could allow having multiple filtered data sets associated with an event, allowing analysts to work with them separately. One of the main difficulties would be to design a good user interface to compose these queries. Given that BigQuery allows for SQL queries, it would also be interesting to be able to obtain the actual query executed to use it in the BigQuery console. 
+
+Another task would be to add filters for annotations in conjunction with tweets. This is a difficult modeling task, as annotations live in PostgreSQL and tweets live in the storage layer. 
+
+It would also be interesting to add better support for media in data sets. An option could be to add automatic tagging of media using the content of the image and automatic tagging using convolutional neural networks. This would allow analysts to find images that they are interested in their research. 
+
+Something more to explore is using Dataflow instead of Dataproc with Spark. Dataflow is a managed analysis service from Google Cloud. It may be worth switching over to avoid having Spark related issues with batch jobs. Dataflow also has workflows so it should be a seemingly straightforward transition. 
+
+Another interesting extension would be to explore the pre-computation of indexes to explore tweets sorted by other fields than creation time. This would need further research as to whether it can prove useful to actually have it in the user interface as it is already available with BigQuery. If needed, it would be important to check whether it is better to use Spark on batch like the mentions API or if it is better to just use BigQuery to compute the ordered data on demand. 
+
+Finally, it would be interesting to use automatic scoring for relevance. This could be done with machine learning. This score could be used to narrow down the data set to relevant tweets. This is an ambitious goal as it is complex. One way to do it would be using topic classification and allowing the user to filter using topics. 
+

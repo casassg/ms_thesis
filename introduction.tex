@@ -1,0 +1,20 @@
+\chapter{Introduction}
+\label{introchap}
+Our world is rapidly evolving and, due to the increased amount of people connected to the internet, we have seen a massive surge of data generated. Indeed, it is estimated that every month, seventy-two petabytes of information are moved around the Internet. This amount is expected to grow to 232 petabytes/month by 2021 \cite{ciscoreport}. This change forced software engineers to evolve and adapt and that, in turn, has led to work on an area known as big data software engineering.
+
+NoSQL databases were created to respond to the need to store and analyze data at this new scale. These databases were simple engines that went back to basic storing and retrieval mechanisms for data. Compared to SQL databases that had been around for decades, these new NoSQL databases were really primitive when it came to analysis workloads. Over time, however, NoSQL has evolved to simplify its query syntax moving closer to SQL-like rule definitions. 
+% added
+An example of this is Cassandra and CQL language which implements parts of SQL. 
+% added
+Additionally, SQL engines have started to move towards supporting larger analysis workloads, slowly catching up to supporting NoSQL data sizes. This evolution is slowly resulting in better support for SQL queries on big data sized data sets. At the same time, however, the software infrastructure to make this all work has increased in complexity, making it more difficult to maintain these systems in the long term.
+
+Furthermore, cloud platforms have begun to offer on-demand analysis tools. These tools are based on server-less environments which use ephemeral server instances to run their software. 
+% added
+Examples of this are AWS Athena or Google Cloud BigQuery. 
+% added
+This approach allows for the infrastructure to adapt its configuration based on usage and to scale up or down as needed. Thanks to improvements in the speed of on-demand computation, these cloud-based tools have become a great opportunity to cut costs and reduce maintenance difficulties for organizations wrestling with the demands of storing and analyzing truly large data sets.
+
+One research area that benefits from work in big data software engineering is crisis informatics. Crisis informatics studies how the access to ubiquitous social media changes the way in which society responds to disasters. To perform effective research in crisis informatics, researchers must have access to tools that can collect and analyze large amounts of social media data collected during a disaster event. With respect to my work, the analysis of disaster data sets is an interesting problem domain. The frequency of queries performed over disaster data sets is low. There is no need for real-time, 24/7 analysis of these data sets. The project I am affiliated with---Project EPIC---instead collects data 24/7 and then analyses events later, sometimes months or even years after the event. Sometimes, the research questions around an event are known quickly and sometimes they take time to emerge. Given these conditions, I think it would be useful to see if the data analysis tools offered by cloud providers for big data can be usefully applied to the analysis of disaster data sets consisting of social media data. I think these offerings can be shown to be  both cost-effective and fast for domains with low-frequency analysis needs.
+
+My thesis then involves designing and implementing an infrastructure for disaster analysis in the cloud.
+
